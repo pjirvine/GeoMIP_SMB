@@ -6,11 +6,9 @@ These functions will mostly be specific to this project.
 
 import numpy as np
 import os.path
-import cf
+# import cf
 from netCDF4 import Dataset
 from scipy.stats import ttest_ind_from_stats
-from cdo import *
-cdo = Cdo()
 
 from analysis import *
 
