@@ -6,13 +6,14 @@ These functions will mostly be specific to this project.
 
 import numpy as np
 import os.path
-import cf
+# import cf
 from netCDF4 import Dataset
 from scipy.stats import ttest_ind_from_stats
-from cdo import *
-cdo = Cdo()
 
 from analysis import *
+
+from cdo import *   # python version
+cdo = Cdo()
 
 """
 Model - exp - runs + notes
@@ -202,8 +203,55 @@ Get GeoMIP Data
 ###
 """
 
+def get_2d_geomip(var, model, exp, run, seas, stat, time='11-50'):
+    
+    """
+    Returns array of standard GeoMIP netcdf file from my archive using Dataset.
+    Screens out common dimension names to return a single variable as an array.
+    Will fail if there are more than one variables or a dimension has been missed.
+    """
+    
+    # Define nc_file format
+    nc_file_base = "{var}_{model}_{exp}_{run}_{time}_{seas}_{stat}.nc"
+    nc_file = nc_file_base.format(var=var, model=model, exp=exp, run=run, time=time, seas=seas, stat=stat)
+
+    # Define directory format
+    in_dir_base = "/n/home03/pjirvine/keithfs1_pji/geomip_archive/final_data/{model}/{exp}/time{stat}/"
+    in_dir = in_dir_base.format(model=model, exp=exp, stat=stat)
+    
+    file_loc = in_dir + nc_file
+
+    # function which removes list from list.
+    def take_list_from_list(longlist, list2remove):
+        for item in list2remove:
+            try:
+                longlist.remove(item)
+            except:
+                pass # or say something...
+        
+    dim_list = ['lon', 'lon_bnds', 'lat', 'lat_bnds', 'time', 'time_bnds', u'longitude', u'latitude', u'ht', u't', u't_bnds']
+    
+    if os.path.isfile(file_loc):
+        nc = Dataset(file_loc)
+        
+        vars_dims_in_nc = nc.variables.keys() # list vars and dims
+        vars_in_nc = copy(vars_dims_in_nc)
+        
+        # remove dims from vars_dims to leave vars only
+        take_list_from_list(vars_in_nc,dim_list)
+        
+        if len(vars_in_nc) == 1:
+            var_out = vars_in_nc[0]
+            return nc.variables[var_out][:]
+        else:
+            print "more than one var",nc_file
+            return None
+    
+    else:
+        return None # doesn't make print statement as many files are missing.
+
 # This function retrieves the desired netcdf file.
-def get_2d_geomip(var, model, exp, run, seas, stat,
+def get_2d_geomip_old(var, model, exp, run, seas, stat,
                     time='11-50', lon_lat=False, lat_name='latitude', lon_name='longitude'):
 
     """

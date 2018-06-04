@@ -4,63 +4,11 @@ These functions should be of general use
 """
 
 import numpy as np
-import cf
+# import cf
 from scipy.stats import ttest_ind_from_stats
 import itertools
-from cdo import *
+from cdo import *   # python version
 cdo = Cdo()
-
-def cdo_regrid_array(in_ncfile, in_array, out_ncfile):
-
-    """
-    returns in_array regridded from in_ncfile grid to out_ncfile grid.
-    in_array and in_ncfile must have same grid.
-    A degenerate axis will be added if needed.
-    
-    uses remapbil to regrid [could add others].
-    
-    input: string, ndarray, string
-    returns: out_array (ndarray)
-    """
-
-    # Produce griddes for out_file
-    griddes_out = cdo.griddes(input=out_ncfile)
-    griddes_out = """{}""".format("\n".join(griddes_out[1:]))
-    with open('griddes_temp.txt', 'w') as f:
-        write_data = f.write(griddes_out)
-
-    """
-    Produce temporary netcdf file holding array to be regridded
-    """
-    
-    # copy input array and ncfile
-    temp_array = in_array.copy()
-    in_nc = cf.read(in_ncfile)
-    temp_nc = in_nc.copy()
-
-    # test if array shapes match, if not add degenerate axis, then if not return error
-    if temp_nc.array.shape != temp_array.shape:
-        temp_array = np.expand_dims(temp_array, axis=0) # add degen axis on axis 0
-    if temp_nc.array.shape != temp_array.shape:
-        return 'array shapes dont match: ', temp_nc.array.shape, temp_array.shape
-    
-    # Set in_array as contents of temp nc data
-    # https://cfpython.bitbucket.io/docs/latest/generated/cf.Data.loadd.html#cf.Data.loadd
-    temp_nc_data = cf.Data(temp_array, units=temp_nc.units)
-    temp_nc.data.loadd(temp_nc_data.dumpd())
-
-    cf.write(temp_nc, 'temp.nc')
-    
-    """
-    Regrid
-    """
-    
-    var_name = cdo.showname(input=in_ncfile)[0] # select first from list
-    
-    # Use remapping based on distance from orig points:
-    out_array = cdo.remapdis('griddes_temp.txt', input='temp.nc', returnArray = var_name)
-    
-    return out_array
 
 def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False, old_style=False):
     """ Very close to numpy.percentile, but supports weights.
