@@ -12,6 +12,9 @@ from scipy.stats import ttest_ind_from_stats
 
 from analysis import *
 
+from cdo import *   # python version
+cdo = Cdo()
+
 """
 Model - exp - runs + notes
 """

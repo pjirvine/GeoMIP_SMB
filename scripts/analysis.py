@@ -7,6 +7,8 @@ import numpy as np
 # import cf
 from scipy.stats import ttest_ind_from_stats
 import itertools
+from cdo import *   # python version
+cdo = Cdo()
 
 def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False, old_style=False):
     """ Very close to numpy.percentile, but supports weights.
