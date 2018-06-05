@@ -6,7 +6,7 @@ These functions will mostly be specific to this project.
 
 import numpy as np
 import os.path
-# import cf
+from copy import copy
 from netCDF4 import Dataset
 from scipy.stats import ttest_ind_from_stats
 
@@ -229,7 +229,8 @@ def get_2d_geomip(var, model, exp, run, seas, stat, time='11-50'):
             except:
                 pass # or say something...
         
-    dim_list = ['lon', 'lon_bnds', 'lat', 'lat_bnds', 'time', 'time_bnds', u'longitude', u'latitude', u'ht', u't', u't_bnds']
+    dim_list = ['lon', 'lon_bnds', 'lat', 'lat_bnds', 'time', 'time_bnds', u'longitude', u'latitude', 
+                u'ht', u't', u't_bnds',u'surface']
     
     if os.path.isfile(file_loc):
         nc = Dataset(file_loc)
@@ -244,7 +245,7 @@ def get_2d_geomip(var, model, exp, run, seas, stat, time='11-50'):
             var_out = vars_in_nc[0]
             return nc.variables[var_out][:]
         else:
-            print "more than one var",nc_file
+            print "extra vars",vars_in_nc,nc_file
             return None
     
     else:
