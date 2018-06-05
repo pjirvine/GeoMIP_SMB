@@ -7,5 +7,5 @@
 module load cdo
 module load python/2.7.13-fasrc01
 # load project environment
-. ~/apps/bin/module_load_01_06_18
+source activate analysis_01_06_18
 
