@@ -1,0 +1,5 @@
+cdo sub rsds_Amon_BNU-ESM_G1_r2i1p1_11-50.nc rsus_Amon_BNU-ESM_G1_r2i1p1_11-50.nc swnetsurf_test.nc
+cdo sub rlds_Amon_BNU-ESM_G1_r2i1p1_11-50.nc rlus_Amon_BNU-ESM_G1_r2i1p1_11-50.nc lwnetsurf_test.nc
+cdo add hfls_Amon_BNU-ESM_G1_r2i1p1_11-50.nc hfss_Amon_BNU-ESM_G1_r2i1p1_11-50.nc shlh_test.nc
+cdo add swnetsurf_test.nc lwnetsurf_test.nc radnetsurf_test.nc
+cdo sub radnetsurf_test.nc shlh_test.nc heatnetsurf_test.nc
