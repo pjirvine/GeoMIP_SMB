@@ -122,13 +122,13 @@ def get_masks_weights(model_in, variable=""):
     # calculate grid_weights
     # Check if gridweights file is present (this is needed as some mask files don't contain gridweights)
     # and calculated if not.
-    file_loc = in_dir+ model + 'gridweights.nc'
+    file_loc = in_dir+ model + '_gridweights.nc'
     if os.path.isfile(file_loc):
         grid_weights = Dataset(file_loc).variables['cell_weights'][:]
-        if any(np.isnan(grid_weights)):
+        if np.isnan(grid_weights).any():
             print model_in, 'NAN present'
     else:
-        print 'gridweights not found'
+        print file_loc, 'gridweights not found'
         grid_weights = cdo.gridweights(input=in_dir+land_file, returnArray  =  'cell_weights')
     
     # Check if population weighting is there
